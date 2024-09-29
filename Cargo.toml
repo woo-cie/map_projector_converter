@@ -8,3 +8,5 @@ description = "Convert map projector"
 
 [dependencies]
 clap = { version = "4.5.15", features = ["derive"] }
+serde = { version = "1.0.205", features = ["derive"] }
+serde_yaml = "0.9.34"
