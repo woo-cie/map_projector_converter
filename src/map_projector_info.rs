@@ -1,4 +1,4 @@
-use std::{fs::File, io, io::BufReader, path::Path};
+use std::{fs::File, io::BufReader, path::Path};
 
 use serde::{Deserialize, Serialize};
 
@@ -29,10 +29,10 @@ pub enum MapProjectorInfo {
 }
 
 impl MapProjectorInfo {
-    pub fn from_path<P: AsRef<Path>>(path: P) -> io::Result<MapProjectorInfo> {
+    pub fn from_path<P: AsRef<Path>>(path: P) -> anyhow::Result<MapProjectorInfo> {
         let f = File::open(path)?;
         let r = BufReader::new(f);
-        Ok(serde_yaml::from_reader(r).unwrap())
+        Ok(serde_yaml::from_reader(r)?)
     }
 }
 

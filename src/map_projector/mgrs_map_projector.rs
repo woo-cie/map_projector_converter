@@ -1,7 +1,7 @@
 use crate::coordinate::{Cartesian, Geographic};
 use crate::map_projector_info::MgrsMapProjectorInfo;
 
-use super::base::MapProjector;
+use super::base::{MapProjector, MapProjectorError, MapProjectorResult};
 
 #[derive(Debug)]
 pub struct MgrsMapProjector {
@@ -16,7 +16,7 @@ impl MgrsMapProjector {
     }
 }
 impl MapProjector for MgrsMapProjector {
-    fn to_coord(&self, from_coord: &Geographic) -> Result<Cartesian, proj::ProjError> {
+    fn to_coord(&self, from_coord: &Geographic) -> MapProjectorResult<Cartesian> {
         let utm_coord: geo_types::Coord<f64> =
             self.utm_projector.project(from_coord.into(), false)?;
         Ok(Cartesian {
@@ -25,7 +25,7 @@ impl MapProjector for MgrsMapProjector {
             z: from_coord.ele,
         })
     }
-    fn to_lat_lon(&self, from_coord: &Cartesian) -> Result<Geographic, proj::ProjError> {
+    fn to_lat_lon(&self, from_coord: &Cartesian) -> MapProjectorResult<Geographic> {
         let utm_coord = Cartesian {
             x: from_coord.x + self.mgrs.easting() - self.get_mgrs_grid_size() / 2.0,
             y: from_coord.y + self.mgrs.northing() - self.get_mgrs_grid_size() / 2.0,
@@ -39,9 +39,10 @@ impl MapProjector for MgrsMapProjector {
         })
     }
 }
-impl From<&MgrsMapProjectorInfo> for MgrsMapProjector {
-    fn from(info: &MgrsMapProjectorInfo) -> MgrsMapProjector {
-        let mgrs = geoconvert::Mgrs::parse_str(&info.mgrs_grid).unwrap();
+impl TryFrom<&MgrsMapProjectorInfo> for MgrsMapProjector {
+    type Error = MapProjectorError;
+    fn try_from(info: &MgrsMapProjectorInfo) -> MapProjectorResult<Self> {
+        let mgrs = geoconvert::Mgrs::parse_str(&info.mgrs_grid)?;
 
         let utm_projection = format!(
             "+proj=utm +zone={zone} +k_0=0.9996 +ellps={ellps}",
@@ -53,13 +54,13 @@ impl From<&MgrsMapProjectorInfo> for MgrsMapProjector {
             "+proj=pipeline +step {} +step {}",
             latlong_projection, utm_projection
         );
-        let utm_projector = proj::Proj::new(&pipeline_projection).unwrap();
+        let utm_projector = proj::Proj::new(&pipeline_projection)?;
 
-        MgrsMapProjector {
+        Ok(MgrsMapProjector {
             map_projector_info: info.clone(),
             mgrs,
             utm_projector,
-        }
+        })
     }
 }
 
@@ -90,7 +91,7 @@ mod tests {
                 vertical_datum: String::from("WGS84"),
                 mgrs_grid,
             };
-            let projector = MgrsMapProjector::from(&info);
+            let projector = MgrsMapProjector::try_from(&info).unwrap();
 
             for (geographic, expected) in testcases {
                 assert_eq!(projector.to_coord(&geographic).unwrap(), expected);

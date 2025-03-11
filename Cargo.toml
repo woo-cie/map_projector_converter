@@ -7,7 +7,7 @@ description = "Convert map projector"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.97"
+anyhow = { version = "1.0.97", features = ["backtrace", "std"] }
 clap = { version = "4.5.15", features = ["derive"] }
 geo-types = "0.7.15"
 geoconvert = "1.0.2"
