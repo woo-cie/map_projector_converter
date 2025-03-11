@@ -26,8 +26,8 @@ impl MapProjectorConverter {
         })
     }
 
-    pub fn convert(&self, coord: Cartesian) -> Cartesian {
-        let lat_lon = self.from_projector.to_lat_lon(&coord);
+    pub fn convert(&self, coord: Cartesian) -> Result<Cartesian, proj::ProjError> {
+        let lat_lon = self.from_projector.to_lat_lon(&coord)?;
         self.to_projector.to_coord(&lat_lon)
     }
 }

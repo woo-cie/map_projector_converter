@@ -4,8 +4,8 @@ use crate::map_projector_info::MapProjectorInfo;
 use super::mgrs_map_projector::MgrsMapProjector;
 use super::tm_map_projector::TmMapProjector;
 pub trait MapProjector: std::fmt::Debug {
-    fn to_lat_lon(&self, from_coord: &Cartesian) -> Geographic;
-    fn to_coord(&self, from_coord: &Geographic) -> Cartesian;
+    fn to_lat_lon(&self, from_coord: &Cartesian) -> Result<Geographic, proj::ProjError>;
+    fn to_coord(&self, from_coord: &Geographic) -> Result<Cartesian, proj::ProjError>;
 }
 
 impl From<&MapProjectorInfo> for Box<dyn MapProjector> {

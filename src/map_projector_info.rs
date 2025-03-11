@@ -2,25 +2,25 @@ use std::{fs::File, io, io::BufReader, path::Path};
 
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct MgrsMapProjectorInfo {
-    vertical_datum: String,
+    pub vertical_datum: String,
     pub mgrs_grid: String,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct MapOrigin {
     pub longitude: f64,
     pub latitude: f64,
-    altitude: f64,
+    pub altitude: f64,
 }
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 pub struct TmMapProjectorInfo {
-    vertical_datum: String,
+    pub vertical_datum: String,
     pub map_origin: MapOrigin,
 }
 
-#[derive(Serialize, Deserialize, PartialEq, Debug)]
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
 #[serde(tag = "projector_type")]
 pub enum MapProjectorInfo {
     #[allow(clippy::upper_case_acronyms)]

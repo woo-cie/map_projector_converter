@@ -6,10 +6,10 @@ use super::base::MapProjector;
 #[derive(Debug)]
 pub struct MgrsMapProjector {}
 impl MapProjector for MgrsMapProjector {
-    fn to_coord(&self, _from_coord: &Geographic) -> Cartesian {
+    fn to_coord(&self, _from_coord: &Geographic) -> Result<Cartesian, proj::ProjError> {
         todo!()
     }
-    fn to_lat_lon(&self, _from_coord: &Cartesian) -> Geographic {
+    fn to_lat_lon(&self, _from_coord: &Cartesian) -> Result<Geographic, proj::ProjError> {
         todo!()
     }
 }
