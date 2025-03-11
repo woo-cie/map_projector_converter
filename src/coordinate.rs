@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-const EPSILON_DEGREE: f64 = 1e-11;
+const EPSILON_DEGREE: f64 = 1e-9;
 const EPSILON_METER: f64 = 1e-4;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
